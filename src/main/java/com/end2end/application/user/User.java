@@ -33,4 +33,13 @@ public class User {
     )
     private Collection<Role> roles;
 
+    public User(String username, String firstName, String lastName, String password, String email, boolean isActive, Collection<Role> roles) {
+        this.username = username;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.password = password;
+        this.email = email;
+        this.isActive = isActive;
+        this.roles = roles;
+    }
 }

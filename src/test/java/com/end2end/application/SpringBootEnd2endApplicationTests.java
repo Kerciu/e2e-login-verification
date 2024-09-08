@@ -1,4 +1,4 @@
-package com.end2end.springbootend2end;
+package com.end2end.application;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

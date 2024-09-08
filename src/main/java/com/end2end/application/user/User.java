@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.NaturalId;
 
 import java.util.Collection;
 
@@ -19,11 +20,14 @@ public class User {
     private String firstName;
     private String lastName;
     private String password;
+
+    @NaturalId(mutable = true)
     private String email;
     private boolean isActive = false;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "user_roles",
+    @JoinTable(
+        name = "user_roles",
         joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
         inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
     )

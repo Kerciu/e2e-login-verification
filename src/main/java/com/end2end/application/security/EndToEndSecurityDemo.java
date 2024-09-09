@@ -19,24 +19,29 @@ public class EndToEndSecurityDemo {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        return httpSecurity.csrf().disable()
-                .authorizeHttpRequests()
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.csrf(csrf -> csrf.disable()) // disable csrf
+
+            // authorisation configuration
+            .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/", "/registration/**").permitAll()
                 .anyRequest().authenticated()
-                .and()
-                .formLogin()
+            )
+            // login form configuration
+            .formLogin(form -> form
                 .loginPage("/login")
                 .usernameParameter("email")
                 .defaultSuccessUrl("/")
                 .permitAll()
-                .and()
-                .logout()
+            )
+            // logout configuration
+            .logout(logout -> logout
                 .invalidateHttpSession(true)
                 .clearAuthentication(true)
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                 .logoutSuccessUrl("/")
-                .and()
-                .build();
+            );
+
+        return http.build();
     }
 }

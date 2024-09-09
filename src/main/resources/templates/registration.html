@@ -10,7 +10,7 @@
     <body>
     <form>
         <div class="container col-md-offset-3 col-md-8 mt-lg-5">
-            <div class="row mt-2">
+            <div class="row mt-2 ml-4">
                 <div th:if="${param.success}">
                     Registered successfully! We've emailed you a confirmation link.
                 </div>
@@ -50,7 +50,7 @@
             </div>
         </div>
         <div class="container col-md-offset-6 col-md-12 mt-lg-12">
-            <button type="button" class="btn btn-primary btn-lg btn-success">Large button</button>
+            <button type="submit" class="btn btn-primary btn-lg btn-success">Register</button>
             <span>Already have an account? <a href="/" th:href="${authenticate/login}">Click here to login!</a></span>
         </div>
     </form>

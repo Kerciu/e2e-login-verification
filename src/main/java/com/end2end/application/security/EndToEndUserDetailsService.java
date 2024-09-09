@@ -13,7 +13,9 @@ public class EndToEndUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return null;
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        return userRepository.findByEmail(email)
+            .map(EndToEndUserDetails::new)
+            .orElseThrow(() -> new UsernameNotFoundException("Could not find the user."));
     }
 }

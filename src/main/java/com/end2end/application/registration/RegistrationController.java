@@ -4,7 +4,6 @@ import com.end2end.application.events.RegistrationCompleteEvent;
 import com.end2end.application.user.User;
 import com.end2end.application.user.UserServiceProvider;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -34,6 +33,6 @@ public class RegistrationController {
         // publish the verification email event
         publisher.publishEvent(new RegistrationCompleteEvent(user, ""));
 
-        return "redirect:/registration//registration-form?success";
+        return "redirect:/registration/registration-form?success";
     }
 }

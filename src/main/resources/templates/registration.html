@@ -10,6 +10,14 @@
     <body>
     <form>
         <div class="container col-md-offset-3 col-md-8 mt-lg-5">
+            <div class="row mt-2">
+                <div th:if="${param.success}">
+                    Registered successfully! We've emailed you a confirmation link.
+                </div>
+            </div>
+
+            <div class="m-4">Registration Form</div>
+
             <div class="mb-3 row">
                 <label for="username" class="col-sm-2 col-form-label">Username</label>
                 <div class="col-sm-6">

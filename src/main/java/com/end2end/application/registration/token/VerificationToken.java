@@ -28,6 +28,6 @@ public class VerificationToken {
     public VerificationToken(String token, User user) {
         this.token = token;
         this.user = user;
-        this.expirationTime = null;
+        this.expirationTime = TokenExpirationTime.getExpirationTime();
     }
 }

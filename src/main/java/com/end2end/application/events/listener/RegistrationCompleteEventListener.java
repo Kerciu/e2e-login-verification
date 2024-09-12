@@ -28,9 +28,11 @@ public class RegistrationCompleteEventListener implements ApplicationListener<Re
         String token = UUID.randomUUID().toString();
         verificationTokenService.saveUserVerificationToken(user, token);
 
-        String url = event.getConfirmationUrl() + "/registration/verifyEmail?token" + token;
+        String url = event.getConfirmationUrl() + "/registration/verifyEmail?token=" + token;
         String subject = "User Account Verification";
         String senderEmail = System.getenv("SPRING_MAIL_USERNAME");
+        senderEmail = senderEmail != null ? senderEmail : "kerciuuu@gmail.com";
+
         String senderName = "End To End Application";
 
         HashMap<String, String> emailContents = EmailTemplate.verificationEmail(subject, senderEmail, senderName, url, user);

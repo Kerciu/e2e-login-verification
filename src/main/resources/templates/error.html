@@ -8,15 +8,23 @@
         crossorigin="anonymous">
 </head>
 <body>
-<div class="container col-md-offset-3 col-md-8 mt-lg-5">
-    <div class="row mt-4">
-      <div th:if="${param.invalid}" class="col-sm-8">
-        <p class="alert alert-danger">Invalid verification token !</p>
+
+  <div class="container col-md-offset-3 col-md-8 mt-lg-5">
+
+      <div class="row mt-2">
+        <div th:if="${param.invalid}" class="col-sm-8">
+          <p class="alert alert-danger">Invalid verification token !</p>
+        </div>
+
+        <div th:if="${param.expired}" class="col-sm-8">
+          <p class="alert alert-info">This verification token has already expired !</p>
+        </div>
+
       </div>
-      <div th:if="${param.expired}" class="col-sm-8">
-        <p class="alert alert-info">This verification token has already expired !</p>
-      </div>
-    </div>
-</div>
+
+  </div>
+
+  <a href="#" th:href="@{/}">Go back to the home page.</a>
+
 </body>
 </html>

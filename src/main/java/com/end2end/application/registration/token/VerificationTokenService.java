@@ -18,7 +18,7 @@ public class VerificationTokenService implements VerificationTokenServiceProvide
     public String validateToken(String token) {
         Optional<VerificationToken> verificationToken = verificationTokenRepository.findByToken(token);
         if (token.isEmpty()) {
-            return "Invalid verification token";
+            return "invalid";
         }
 
         User user = verificationToken.get().getUser();

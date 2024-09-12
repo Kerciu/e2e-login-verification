@@ -1,6 +1,9 @@
 package com.end2end.application.registration;
 
 import com.end2end.application.events.RegistrationCompleteEvent;
+import com.end2end.application.registration.token.VerificationToken;
+import com.end2end.application.registration.token.VerificationTokenRepository;
+import com.end2end.application.registration.token.VerificationTokenService;
 import com.end2end.application.user.User;
 import com.end2end.application.user.UserServiceProvider;
 import com.end2end.application.utility.UrlManager;
@@ -9,10 +12,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/registration")
@@ -20,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class RegistrationController {
     private final UserServiceProvider userService;
     private final ApplicationEventPublisher publisher;
+    private final VerificationTokenRepository tokenRepository;
+    private final VerificationTokenService verificationTokenService;
 
     @GetMapping("/registration-form")
     public String showRegistrationForm(Model model) {
@@ -36,5 +40,21 @@ public class RegistrationController {
         publisher.publishEvent(new RegistrationCompleteEvent(user, UrlManager.getApplicationUrl(request)));
 
         return "redirect:/registration/registration-form?success";
+    }
+
+    public String verifyEmail(@RequestParam("token") String token) {
+        Optional<VerificationToken> tokenFound = tokenRepository.findByToken(token);
+        if (tokenFound.isPresent() && tokenFound.get().getUser().isActive()) {
+            return "redirect:/login?verified";
+        }
+
+        String verificationResult = verificationTokenService.validateToken(String.valueOf(tokenFound));
+        if (verificationResult.equalsIgnoreCase("expired")) {
+            return "redirect:/error?expired";
+        }
+        else if (verificationResult.equalsIgnoreCase("valid")) {
+            return "redirect:/login?valid";
+        }
+        else return "redirect:/error?invalid";
     }
 }

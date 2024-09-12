@@ -42,19 +42,18 @@ public class RegistrationController {
         return "redirect:/registration/registration-form?success";
     }
 
+    @GetMapping("/verifyEmail")
     public String verifyEmail(@RequestParam("token") String token) {
         Optional<VerificationToken> tokenFound = tokenRepository.findByToken(token);
         if (tokenFound.isPresent() && tokenFound.get().getUser().isActive()) {
             return "redirect:/login?verified";
         }
 
-        String verificationResult = verificationTokenService.validateToken(String.valueOf(tokenFound));
-        if (verificationResult.equalsIgnoreCase("expired")) {
-            return "redirect:/error?expired";
-        }
-        else if (verificationResult.equalsIgnoreCase("valid")) {
-            return "redirect:/login?valid";
-        }
-        else return "redirect:/error?invalid";
+        String verificationResult = verificationTokenService.validateToken(token);
+        return switch (verificationResult.toLowerCase()) {
+            case "expired" -> "redirect:/error?expired";
+            case "valid" -> "redirect:/login?valid";
+            default -> "redirect:/error?invalid";
+        };
     }
 }

@@ -22,7 +22,7 @@ public class UserService implements UserServiceProvider {
 
     @Override
     public User registerUser(RegistrationRequest registrationRequest) {
-        return new User(
+        User user = new User(
                 registrationRequest.getUsername(),
                 registrationRequest.getFirstName(),
                 registrationRequest.getLastName(),
@@ -30,6 +30,7 @@ public class UserService implements UserServiceProvider {
                 registrationRequest.getEmail(),
                 Arrays.asList(new Role("ROLE_USER"))
         );
+        return userRepository.save(user);
     }
 
     @Override

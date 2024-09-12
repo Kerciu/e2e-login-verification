@@ -19,4 +19,9 @@ public class HomeController {
     public String showLoginPage() {
         return "login";
     }
+
+    @GetMapping("/error")
+    public String showErrorPage() {
+        return "error";
+    }
 }

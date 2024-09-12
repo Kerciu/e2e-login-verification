@@ -24,7 +24,7 @@ public class EndToEndSecurityDemo {
 
             // authorisation configuration
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/", "/registration/**").permitAll()
+                .requestMatchers("/",  "/login", "/error", "/registration/**").permitAll()
                 .anyRequest().authenticated()
             )
             // login form configuration

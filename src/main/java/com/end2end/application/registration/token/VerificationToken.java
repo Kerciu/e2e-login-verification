@@ -1,6 +1,7 @@
 package com.end2end.application.registration.token;
 
 import com.end2end.application.user.User;
+import com.end2end.application.utility.TokenExpirationTime;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

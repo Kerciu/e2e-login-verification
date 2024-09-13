@@ -1,4 +1,4 @@
-package com.end2end.application.registration.token;
+package com.end2end.application.utility;
 
 import java.util.Calendar;
 import java.util.Date;

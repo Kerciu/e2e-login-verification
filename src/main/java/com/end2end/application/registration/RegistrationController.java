@@ -56,4 +56,9 @@ public class RegistrationController {
             default -> "redirect:/error?invalid";
         };
     }
+
+    @GetMapping("/forgot-password-request")
+    public String forgotPassword() {
+        return "forgot-password-form";
+    }
 }

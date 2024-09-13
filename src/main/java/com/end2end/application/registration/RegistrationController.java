@@ -16,6 +16,7 @@ import com.end2end.application.utility.UrlManager;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.mail.MailException;
@@ -52,7 +53,6 @@ public class RegistrationController {
     {
         User user = userService.registerUser(registrationRequest);
 
-        // publish the verification email event
         publisher.publishEvent(new RegistrationCompleteEvent(user, UrlManager.getApplicationUrl(request)));
 
         return "redirect:/registration/registration-form?success";
@@ -101,10 +101,15 @@ public class RegistrationController {
         try {
             EmailSender.send(registrationCompleteEventListener.getMailSender(), emailContents);
         } catch (MessagingException | UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
             model.addAttribute("error", e.getMessage());
         }
 
         return "redirect:/registration/forgot-password-request?success";
+    }
+
+    @GetMapping("/reset-password")
+    public String passwordResetForm(@RequestParam("token") String token, Model model) {
+        model.addAttribute("token", token);
+        return "password-reset-form";
     }
 }

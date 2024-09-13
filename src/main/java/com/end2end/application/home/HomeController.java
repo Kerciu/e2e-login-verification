@@ -1,6 +1,7 @@
 package com.end2end.application.home;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -9,17 +10,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class HomeController {
 
     @GetMapping
-    public String showHomePage() {
+    public String homePage(){
         return "home";
     }
 
     @GetMapping("/login")
-    public String showLoginPage() {
+    public String login(){
         return "login";
     }
 
     @GetMapping("/error")
-    public String showErrorPage() {
+    public String error(){
         return "error";
     }
 }

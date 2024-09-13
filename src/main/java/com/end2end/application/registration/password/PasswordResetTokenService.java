@@ -16,7 +16,8 @@ public class PasswordResetTokenService implements PasswordResetTokenServiceProvi
 
     @Override
     public void createUserPasswordResetToken(User user, String passwordResetToken) {
-
+        PasswordResetToken resetToken = new PasswordResetToken(passwordResetToken, user);
+        passwordResetTokenRepository.save(resetToken);
     }
 
     @Override

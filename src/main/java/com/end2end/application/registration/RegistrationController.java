@@ -1,20 +1,35 @@
 package com.end2end.application.registration;
 
 import com.end2end.application.events.RegistrationCompleteEvent;
+import com.end2end.application.events.listener.RegistrationCompleteEventListener;
+import com.end2end.application.registration.password.PasswordResetTokenService;
+import com.end2end.application.registration.password.PasswordResetTokenServiceProvider;
 import com.end2end.application.registration.token.VerificationToken;
 import com.end2end.application.registration.token.VerificationTokenRepository;
 import com.end2end.application.registration.token.VerificationTokenService;
 import com.end2end.application.user.User;
+import com.end2end.application.user.UserService;
 import com.end2end.application.user.UserServiceProvider;
+import com.end2end.application.utility.EmailSender;
+import com.end2end.application.utility.EmailTemplate;
 import com.end2end.application.utility.UrlManager;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.mail.MailException;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 import java.util.Optional;
+import java.util.UUID;
 
 @Controller
 @RequestMapping("/registration")
@@ -22,8 +37,9 @@ import java.util.Optional;
 public class RegistrationController {
     private final UserServiceProvider userService;
     private final ApplicationEventPublisher publisher;
-    private final VerificationTokenRepository tokenRepository;
     private final VerificationTokenService verificationTokenService;
+    private final PasswordResetTokenServiceProvider passwordResetTokenService;
+    private final RegistrationCompleteEventListener registrationCompleteEventListener;
 
     @GetMapping("/registration-form")
     public String showRegistrationForm(Model model) {
@@ -44,7 +60,7 @@ public class RegistrationController {
 
     @GetMapping("/verifyEmail")
     public String verifyEmail(@RequestParam("token") String token) {
-        Optional<VerificationToken> tokenFound = tokenRepository.findByToken(token);
+        Optional<VerificationToken> tokenFound = verificationTokenService.findByToken(token);
         if (tokenFound.isPresent() && tokenFound.get().getUser().isActive()) {
             return "redirect:/login?verified";
         }
@@ -60,5 +76,35 @@ public class RegistrationController {
     @GetMapping("/forgot-password-request")
     public String forgotPassword() {
         return "forgot-password-form";
+    }
+
+    @PostMapping("/forgot-password")
+    public String resetPasswordRequest(HttpServletRequest request, Model model) {
+        String email = request.getParameter("email");
+        User user = userService.findUserByEmail(email);
+
+        if (user == null) {
+            return "redirect:/forgot-password-request?not_found";
+        }
+
+        String passwordResetToken = UUID.randomUUID().toString();
+        passwordResetTokenService.createUserPasswordResetToken(user, passwordResetToken);
+
+        String url = UrlManager.getApplicationUrl(request) + "/registration/password-reset-form?token=" + passwordResetToken;
+        String subject = "User Account Password Reset";
+        String senderEmail = System.getenv("SPRING_MAIL_USERNAME");
+        senderEmail = senderEmail != null ? senderEmail : "kerciuuu@gmail.com";
+
+        String senderName = "End To End Application";
+
+        HashMap<String, String> emailContents = EmailTemplate.createEmail(subject, senderEmail, senderName, url, user, false);
+        try {
+            EmailSender.send(registrationCompleteEventListener.getMailSender(), emailContents);
+        } catch (MessagingException | UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+            model.addAttribute("error", e.getMessage());
+        }
+
+        return "redirect:/registration/forgot-password-request?success";
     }
 }

@@ -6,6 +6,7 @@ import com.end2end.application.user.User;
 import com.end2end.application.utility.EmailSender;
 import com.end2end.application.utility.EmailTemplate;
 import jakarta.mail.MessagingException;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationListener;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -15,6 +16,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.UUID;
 
+@Getter
 @Component
 @RequiredArgsConstructor
 public class RegistrationCompleteEventListener implements ApplicationListener<RegistrationCompleteEvent> {
@@ -35,7 +37,7 @@ public class RegistrationCompleteEventListener implements ApplicationListener<Re
 
         String senderName = "End To End Application";
 
-        HashMap<String, String> emailContents = EmailTemplate.verificationEmail(subject, senderEmail, senderName, url, user);
+        HashMap<String, String> emailContents = EmailTemplate.createEmail(subject, senderEmail, senderName, url, user, true);
         try {
             EmailSender.send(mailSender, emailContents);
         } catch (MessagingException | UnsupportedEncodingException e) {

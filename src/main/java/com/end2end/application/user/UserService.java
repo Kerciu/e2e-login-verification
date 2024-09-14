@@ -47,6 +47,7 @@ public class UserService implements UserServiceProvider {
         return userRepository.findById(userId);
     }
 
+    @Transactional
     @Override
     public void updateUser(Long userId, String username, String firstName, String lastName, String email) {
         userRepository.update(userId, username, firstName, lastName, email);

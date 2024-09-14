@@ -1,6 +1,8 @@
 package com.end2end.application.user;
 
 import com.end2end.application.registration.RegistrationRequest;
+import com.end2end.application.registration.token.VerificationTokenService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,6 +17,7 @@ import java.util.Optional;
 public class UserService implements UserServiceProvider {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final VerificationTokenService verificationTokenService;
 
     @Override
     public List<User> getAllUsers() {
@@ -47,5 +50,13 @@ public class UserService implements UserServiceProvider {
     @Override
     public void updateUser(Long userId, String username, String firstName, String lastName, String email) {
         userRepository.update(userId, username, firstName, lastName, email);
+    }
+
+    @Transactional
+    @Override
+    public void deleteUser(Long userId) {
+        Optional<User> user = userRepository.findById(userId);
+        user.ifPresent(u -> verificationTokenService.deleteUserToken(u.getId()));
+        userRepository.deleteById(userId);
     }
 }

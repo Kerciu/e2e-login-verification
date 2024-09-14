@@ -27,7 +27,6 @@ public class UserController {
     public String showUpdateForm(@PathVariable("id") Long userId, Model model) {
         Optional<User> user = userService.findById(userId);
         model.addAttribute("user", user.get());
-
         return "update-user";
     }
 }

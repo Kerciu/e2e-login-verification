@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.Optional;
@@ -28,5 +29,11 @@ public class UserController {
         Optional<User> user = userService.findById(userId);
         model.addAttribute("user", user.get());
         return "update-user";
+    }
+
+    @PostMapping("/update/{id}")
+    public String updateUser(@PathVariable("id") Long userId, User user) {
+        userService.updateUser(userId, user.getUsername(), user.getFirstName(), user.getLastName(), user.getEmail());
+        return "redirect:/users?update_success";
     }
 }

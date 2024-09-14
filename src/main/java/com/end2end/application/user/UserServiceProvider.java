@@ -11,4 +11,6 @@ public interface UserServiceProvider {
     User findUserByEmail(String email);
 
     Optional<User> findById(Long userId);
+
+    void updateUser(Long userId, String username, String firstName, String lastName, String email);
 }

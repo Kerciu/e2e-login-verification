@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -36,5 +37,10 @@ public class UserService implements UserServiceProvider {
     @Override
     public User findUserByEmail(String email) {
         return userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    }
+
+    @Override
+    public Optional<User> findById(Long userId) {
+        return userRepository.findById(userId);
     }
 }
